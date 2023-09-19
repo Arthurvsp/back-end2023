@@ -17,6 +17,7 @@ public class Postagem {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long post_id;
 	
+	
 	private String titulo;
 	private String conteudo;
 	
