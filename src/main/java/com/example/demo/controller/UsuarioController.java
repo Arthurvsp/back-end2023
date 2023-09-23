@@ -19,13 +19,13 @@ public class UsuarioController {
 	@Autowired
 	private UsuarioRepository repository;
 	
-	@GetMapping
+	@GetMapping("/listar")
 	public List<Usuario> findAll() {
 		List<Usuario> result = repository.findAll();
 		return result;
 	}
 	
-	@PostMapping
+	@PostMapping("/cadastrar")
 	public Usuario insert(@RequestBody Usuario usuario) {
 		Usuario result = repository.save(usuario);
 		return result;
