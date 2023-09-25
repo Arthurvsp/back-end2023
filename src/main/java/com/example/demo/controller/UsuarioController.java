@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +19,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.entities.Usuario;
 import com.example.demo.repositories.UsuarioRepository;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/usuarios")
@@ -32,9 +36,34 @@ public class UsuarioController {
 	}
 	
 	@PostMapping("/cadastrar")
-	public Usuario insert(@RequestBody Usuario usuario) {
-		Usuario result = repository.save(usuario);
+	public Usuario insert(@Valid @RequestBody Usuario usuario, BindingResult bindingResult) {
+		Usuario result = new Usuario();
+		if (bindingResult.hasErrors()) {
+			//response.setStatusCode("199");
+			for (ObjectError obj : bindingResult.getAllErrors()) {
+				//response.getMensagem().add(obj.getDefaultMessage());
+				System.out.println(obj.getDefaultMessage());
+			}
+			return result;
+		} else {
+			result = repository.save(usuario);
+		}
+		
 		return result;
+	}
+	@PostMapping("/cadastrar2")
+	public String cadastrar2(@Valid @RequestBody Usuario dados, BindingResult bindingResult) {
+//		ProfessorResponseDTO response = new ProfessorResponseDTO();
+//		response.setStatusCode("200");
+		if (bindingResult.hasErrors()) {
+//			response.setStatusCode("199");
+			for (ObjectError obj : bindingResult.getAllErrors()) {
+				System.out.println(obj.getDefaultMessage());
+			}
+			return "Erros";
+		} else {
+			return "Validou";
+		}
 	}
 	
 	@DeleteMapping(value = "/deletar")
