@@ -19,9 +19,6 @@ public class Usuario {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID", nullable = true)
 	private Long id;
-	//@NotBlank(message = "O nome não pode estar nulo ou em branco")
-	//@Column(name = "nome", columnDefinition = "VARCHAR(80)")
-	//@Pattern(regexp = "^[a-zA-Z\\s]+$", message = "O nome só deve conter letras")
 	@Column(name = "nome", columnDefinition = "VARCHAR(80)", nullable = false)
 	@NotBlank(message = "O nome não pode estar nulo ou em branco")
 	@Pattern(regexp = "^[a-zA-Z\\s]+$", message = "O nome só deve conter letras")

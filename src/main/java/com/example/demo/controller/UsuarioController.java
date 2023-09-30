@@ -38,10 +38,8 @@ public class UsuarioController {
 	@PostMapping("/cadastrar")
 	public Usuario insert(@Valid @RequestBody Usuario usuario, BindingResult bindingResult) {
 		Usuario result = new Usuario();
-		if (bindingResult.hasErrors()) {
-			//response.setStatusCode("199");
+		if (bindingResult.hasErrors()) {			
 			for (ObjectError obj : bindingResult.getAllErrors()) {
-				//response.getMensagem().add(obj.getDefaultMessage());
 				System.out.println(obj.getDefaultMessage());
 			}
 			return result;
@@ -51,20 +49,7 @@ public class UsuarioController {
 		
 		return result;
 	}
-	@PostMapping("/cadastrar2")
-	public String cadastrar2(@Valid @RequestBody Usuario dados, BindingResult bindingResult) {
-//		ProfessorResponseDTO response = new ProfessorResponseDTO();
-//		response.setStatusCode("200");
-		if (bindingResult.hasErrors()) {
-//			response.setStatusCode("199");
-			for (ObjectError obj : bindingResult.getAllErrors()) {
-				System.out.println(obj.getDefaultMessage());
-			}
-			return "Erros";
-		} else {
-			return "Validou";
-		}
-	}
+	
 	
 	@DeleteMapping(value = "/deletar")
 	@ResponseBody
@@ -74,6 +59,7 @@ public class UsuarioController {
 		
 		return new ResponseEntity<>("usuario deletado com sucesso", HttpStatus.OK);
 	}
+	
 	
 	@PutMapping(value = "/atualizar")
 	@ResponseBody
@@ -96,6 +82,24 @@ public class UsuarioController {
 		return new ResponseEntity<Usuario>(usuario, HttpStatus.OK);
 	}
 			
+	*/
+	
+	/*
+	@PostMapping("/cadastrar2")
+	public String cadastrar2(@Valid @RequestBody Usuario dados, BindingResult bindingResult) {
+//		ProfessorResponseDTO response = new ProfessorResponseDTO();
+//		response.setStatusCode("200");
+		if (bindingResult.hasErrors()) {
+//			response.setStatusCode("199");
+			for (ObjectError obj : bindingResult.getAllErrors()) {
+				System.out.println(obj.getDefaultMessage());
+			}
+			return "Erros";
+		} else {
+			return "Validou";
+		}
+	}
+	
 	*/
 	
 }
