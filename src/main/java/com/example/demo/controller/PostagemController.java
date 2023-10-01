@@ -5,6 +5,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +20,8 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.entities.Postagem;
 import com.example.demo.entities.Usuario;
 import com.example.demo.repositories.PostagemRepository;
+
+import jakarta.validation.Valid;
 
 
 @RestController
@@ -33,11 +37,28 @@ public class PostagemController {
 		return result;
 	}
 	
+//	@PostMapping("/cadastrar")
+//	public Postagem insert(@RequestBody Postagem postagem) {
+//		Postagem result = repository.save(postagem);
+//		return result;
+//	}
+	
 	@PostMapping("/cadastrar")
-	public Postagem insert(@RequestBody Postagem postagem) {
-		Postagem result = repository.save(postagem);
+	public Postagem insert(@Valid @RequestBody Postagem postagem, BindingResult bindingResult) {
+		Postagem result = new Postagem();
+		if (bindingResult.hasErrors()) {			
+			for (ObjectError obj : bindingResult.getAllErrors()) {
+				System.out.println(obj.getDefaultMessage());
+			}
+			return result;
+		} else {
+			result = repository.save(postagem);
+		}
+		
 		return result;
 	}
+	
+	
 	
 	@DeleteMapping(value = "/deletar")
 	@ResponseBody
