@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,6 +10,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -44,6 +46,7 @@ public class UsuarioController {
 			}
 			return result;
 		} else {
+			usuario.setUsuario_id(0l);
 			result = repository.save(usuario);
 		}
 		
@@ -53,13 +56,19 @@ public class UsuarioController {
 	
 	@DeleteMapping(value = "/deletar")
 	@ResponseBody
-	public ResponseEntity<String> delete(@RequestParam Long usuario_id)	{
+	public String delete(@PathVariable @Valid @RequestParam Long usuario_id)	{
 		
-		repository.deleteById(usuario_id);
+		Optional<Usuario> existingEntity = repository.findById(usuario_id);
+        if (existingEntity.isPresent()) {
+           
+        	repository.delete(existingEntity.get());
+        	return "usuario deletado com sucesso";
+        } else {
+        	return "usuario nao encontrado";
+        }
 		
-		return new ResponseEntity<>("usuario deletado com sucesso", HttpStatus.OK);
+		
 	}
-	
 	
 	@PutMapping(value = "/atualizar")
 	@ResponseBody

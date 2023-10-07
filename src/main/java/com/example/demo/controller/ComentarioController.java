@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -9,6 +10,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -60,13 +62,21 @@ public class ComentarioController {
 	}
 	
 	
+	
 	@DeleteMapping(value = "/deletar")
 	@ResponseBody
-	public ResponseEntity<String> delete(@RequestParam Long id)	{
+	public String delete(@PathVariable @Valid @RequestParam Long id)	{
 		
-		repository.deleteById(id);
+		Optional<Comentario> existingEntity = repository.findById(id);
+        if (existingEntity.isPresent()) {
+           
+        	repository.delete(existingEntity.get());
+        	return "Comentario Deletada com sucesso";
+        } else {
+        	return "Comentario não encontrada";
+        }
 		
-		return new ResponseEntity<>("comentario deletado com sucesso", HttpStatus.OK);
+		
 	}
 	
 	@PutMapping(value = "/atualizar")
