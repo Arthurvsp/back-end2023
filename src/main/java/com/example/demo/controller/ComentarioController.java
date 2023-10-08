@@ -47,18 +47,18 @@ public class ComentarioController {
 	
 	
 	@PostMapping("/cadastrar")
-	public Comentario insert(@Valid @RequestBody Comentario comentario, BindingResult bindingResult) {
+	public String insert(@Valid @RequestBody Comentario comentario, BindingResult bindingResult) {
 		Comentario result = new Comentario();
 		if (bindingResult.hasErrors()) {			
 			for (ObjectError obj : bindingResult.getAllErrors()) {
 				System.out.println(obj.getDefaultMessage());
 			}
-			return result;
+			return "Algo de errado nao esta certo";
 		} else {
 			result = repository.save(comentario);
 		}
 		
-		return result;
+		return "Comentario feito com sucesso";
 	}
 	
 	

@@ -37,20 +37,26 @@ public class UsuarioController {
 		return result;
 	}
 	
+	
+	
 	@PostMapping("/cadastrar")
-	public Usuario insert(@Valid @RequestBody Usuario usuario, BindingResult bindingResult) {
+	public String insert(@Valid @RequestBody Usuario usuario, BindingResult bindingResult) {
+		
+		String mensagem_erro = "algo de errado nao esta certo";
+		String mensagem_sucesso = "Usuario cadastrado com sucesso";
+		
 		Usuario result = new Usuario();
 		if (bindingResult.hasErrors()) {			
 			for (ObjectError obj : bindingResult.getAllErrors()) {
 				System.out.println(obj.getDefaultMessage());
 			}
-			return result;
+			return mensagem_erro;
 		} else {
 			usuario.setUsuario_id(0l);
 			result = repository.save(usuario);
+			return mensagem_sucesso;
 		}
 		
-		return result;
 	}
 	
 	

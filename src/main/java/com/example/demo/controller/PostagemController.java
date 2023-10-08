@@ -46,18 +46,18 @@ public class PostagemController {
 //	}
 	
 	@PostMapping("/cadastrar")
-	public Postagem insert(@Valid @RequestBody Postagem postagem, BindingResult bindingResult) {
+	public String insert(@Valid @RequestBody Postagem postagem, BindingResult bindingResult) {
 		Postagem result = new Postagem();
 		if (bindingResult.hasErrors()) {			
 			for (ObjectError obj : bindingResult.getAllErrors()) {
 				System.out.println(obj.getDefaultMessage());
 			}
-			return result;
+			return "Algo de errado não esta certo";
 		} else {
 			result = repository.save(postagem);
 		}
 		
-		return result;
+		return "Postagem postada com sucesso";
 	}
 	
 	
