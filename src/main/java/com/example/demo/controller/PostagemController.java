@@ -78,14 +78,23 @@ public class PostagemController {
 		
 	}
 	
-	@PutMapping(value = "/atualizar")
+	@PutMapping(value = "/atualizar{id}")
 	@ResponseBody
-	public ResponseEntity<Postagem> atualizar(@RequestBody Postagem postagem) {
+	public String atualizar(@PathVariable Long id, @RequestBody Postagem postagem) {
+		Optional<Postagem> existingEntity = repository.findById(id);
 		
-		Postagem post = repository.saveAndFlush(postagem);
-		
-		return new ResponseEntity<Postagem>(post, HttpStatus.OK);
-	}
-	
+		if(existingEntity.isPresent()){
+			Postagem existingPostagem = existingEntity.get();
+			 existingPostagem.setUsuario(postagem.getUsuario());
+			 existingPostagem.setTitulo(postagem.getTitulo());
+			 existingPostagem.setConteudo(postagem.getConteudo()); 
+			 repository.save(existingPostagem);
+			 return "Postagem atualizado com sucesso!";
+        } else {
+        	return "Postagem não existe";
+        }
+    
+}
 
 }
+	

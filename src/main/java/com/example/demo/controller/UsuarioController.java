@@ -76,13 +76,23 @@ public class UsuarioController {
 		
 	}
 	
-	@PutMapping(value = "/atualizar")
+	@PutMapping(value = "/atualizar/{id}")
 	@ResponseBody
-	public ResponseEntity<Usuario> atualizar(@RequestBody Usuario usuario) {
+	public String atualizar(@PathVariable Long id, @Valid @RequestBody Usuario usuario) {
 		
-		Usuario user = repository.saveAndFlush(usuario);
-		
-		return new ResponseEntity<Usuario>(user, HttpStatus.OK);
+		Optional<Usuario> existingEntity = repository.findById(id);
+		 if (existingEntity.isPresent()) {
+			 Usuario existingUsuario = existingEntity.get();
+			 existingUsuario.setNome(usuario.getNome());
+			 existingUsuario.setEmail(usuario.getEmail());
+			 existingUsuario.setSenha(usuario.getSenha()); 
+			 existingUsuario.setSobre(usuario.getSobre());
+			 repository.save(existingUsuario);
+			 return "Usuário atualizado com sucesso!";
+	        } else {
+	        	return "Usuário não existe";
+	        }
+	    
 	}
 	
 	

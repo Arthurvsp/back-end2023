@@ -79,13 +79,23 @@ public class ComentarioController {
 		
 	}
 	
-	@PutMapping(value = "/atualizar")
+	@PutMapping(value = "/atualizar{id}")
 	@ResponseBody
-	public ResponseEntity<Comentario> atualizar(@RequestBody Comentario comentario) {
+	public String atualizar(@PathVariable Long id,@RequestBody Comentario comentario) {
+		Optional<Comentario> existingEntity = repository.findById(id);
 		
-		Comentario comment = repository.saveAndFlush(comentario);
-		
-		return new ResponseEntity<Comentario>(comment, HttpStatus.OK);
-	}
+		if(existingEntity.isPresent()) {
+			Comentario existingComentario = existingEntity.get();	
+			 existingComentario.setUsuario(comentario.getUsuario());
+			 existingComentario.setPostagem(comentario.getPostagem());
+			 existingComentario.setComentario(comentario.getComentario());
+			 repository.save(existingComentario);
+			 return "Comentario atualizado com sucesso!";
+        } else {
+        	return "Comentario não existe";
+        }
+    
+}
 
 }
+	
