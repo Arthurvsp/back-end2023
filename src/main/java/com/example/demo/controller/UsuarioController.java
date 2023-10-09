@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -78,20 +79,32 @@ public class UsuarioController {
 	
 	@PutMapping(value = "/atualizar/{id}")
 	@ResponseBody
-	public String atualizar(@PathVariable Long id, @Valid @RequestBody Usuario usuario) {
+	public ResponseEntity<Object>atualizar(@PathVariable Long id, @Valid @RequestBody Usuario usuario, BindingResult bindingResult) {
 		
 		Optional<Usuario> existingEntity = repository.findById(id);
 		 if (existingEntity.isPresent()) {
-			 Usuario existingUsuario = existingEntity.get();
-			 existingUsuario.setNome(usuario.getNome());
-			 existingUsuario.setEmail(usuario.getEmail());
-			 existingUsuario.setSenha(usuario.getSenha()); 
-			 existingUsuario.setSobre(usuario.getSobre());
-			 repository.save(existingUsuario);
-			 return "Usuário atualizado com sucesso!";
+			 if (bindingResult.hasErrors()) {
+				 List<String> erros = new ArrayList<>();
+				 for(ObjectError obj:bindingResult.getAllErrors()) {
+					 erros.add(obj.getDefaultMessage());
+				 }
+			
+				 return ResponseEntity.badRequest().body(erros);
 	        } else {
-	        	return "Usuário não existe";
-	        }
+				Usuario existingUsuario = existingEntity.get();
+				 existingUsuario.setNome(usuario.getNome());
+				 existingUsuario.setEmail(usuario.getEmail());
+				 existingUsuario.setSenha(usuario.getSenha()); 
+				 existingUsuario.setSobre(usuario.getSobre());
+				 repository.save(existingUsuario);
+				
+				}
+			 
+	        } 
+		 else {
+			 return ResponseEntity.ok("Usuario não encontrado");
+		 }
+		 return ResponseEntity.ok("Usuario atualizado com sucesso");
 	    
 	}
 	

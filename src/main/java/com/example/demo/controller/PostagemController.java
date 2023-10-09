@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -80,21 +81,32 @@ public class PostagemController {
 	
 	@PutMapping(value = "/atualizar{id}")
 	@ResponseBody
-	public String atualizar(@PathVariable Long id, @RequestBody Postagem postagem) {
-		Optional<Postagem> existingEntity = repository.findById(id);
+	public ResponseEntity<Object>atualizar(@PathVariable Long id, @Valid @RequestBody Postagem postagem, BindingResult bindingResult) {
 		
+		Optional<Postagem> existingEntity = repository.findById(id);
 		if(existingEntity.isPresent()){
-			Postagem existingPostagem = existingEntity.get();
+			if (bindingResult.hasErrors()) {
+				List<String> erros = new ArrayList<>();
+				 for(ObjectError obj:bindingResult.getAllErrors()) {
+					 erros.add(obj.getDefaultMessage());
+				 }
+				 return ResponseEntity.badRequest().body(erros);
+		
+		} else {
+        	Postagem existingPostagem = existingEntity.get();
 			 existingPostagem.setUsuario(postagem.getUsuario());
 			 existingPostagem.setTitulo(postagem.getTitulo());
 			 existingPostagem.setConteudo(postagem.getConteudo()); 
 			 repository.save(existingPostagem);
-			 return "Postagem atualizado com sucesso!";
-        } else {
-        	return "Postagem não existe";
+			
         }
     
 }
-
+		else {
+			 return ResponseEntity.ok("Postagem não encontrado");
+		 }
+		 return ResponseEntity.ok("Postagem atualizado com sucesso");
+	    
+	}
 }
 	

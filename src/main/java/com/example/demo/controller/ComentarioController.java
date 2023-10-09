@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -81,21 +82,33 @@ public class ComentarioController {
 	
 	@PutMapping(value = "/atualizar{id}")
 	@ResponseBody
-	public String atualizar(@PathVariable Long id,@RequestBody Comentario comentario) {
-		Optional<Comentario> existingEntity = repository.findById(id);
+	public ResponseEntity<Object>atualizar(@PathVariable Long id, @Valid @RequestBody Comentario comentario, BindingResult bindingResult) {
 		
+		Optional<Comentario> existingEntity = repository.findById(id);
 		if(existingEntity.isPresent()) {
-			Comentario existingComentario = existingEntity.get();	
-			 existingComentario.setUsuario(comentario.getUsuario());
-			 existingComentario.setPostagem(comentario.getPostagem());
-			 existingComentario.setComentario(comentario.getComentario());
-			 repository.save(existingComentario);
-			 return "Comentario atualizado com sucesso!";
-        } else {
-        	return "Comentario não existe";
-        }
-    
+			if(bindingResult.hasErrors()) {
+				List<String> erros = new ArrayList<>();
+					for(ObjectError obj:bindingResult.getAllErrors()) {
+						erros.add(obj.getDefaultMessage());
+					}
+					return ResponseEntity.badRequest().body(erros);
+					
+			}else {
+	        	Comentario existingComentario = existingEntity.get();	
+				 existingComentario.setUsuario(comentario.getUsuario());
+				 existingComentario.setPostagem(comentario.getPostagem());
+				 existingComentario.setComentario(comentario.getComentario());
+				 repository.save(existingComentario);
+			 
+        } 
+			
 }
-
+		
+		else {
+			 return ResponseEntity.ok("Comentario não encontrado");
+		 }
+		 return ResponseEntity.ok("Comentario atualizado com sucesso");
+	    
+	}
 }
 	
